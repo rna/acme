@@ -2,6 +2,8 @@
 
 require 'minitest/autorun'
 require_relative '../lib/basket'
+require_relative '../lib/delivery_charge_rule'
+
 class BasketTest < Minitest::Test
   def setup
     product_catalogue = {
@@ -10,7 +12,14 @@ class BasketTest < Minitest::Test
       'R01' => { name: 'Red Widget', price: 32.95 }
     }
 
-    @basket = Basket.new(product_catalogue)
+    delivery_rules_data = {
+      50 => 4.95,
+      90 => 2.95
+    }
+
+    delivery_rule = DeliveryChargeRule.new(delivery_rules_data)
+
+    @basket = Basket.new(product_catalogue: product_catalogue, pricing_rules: [delivery_rule])
   end
 
   def test_add_items_to_basket

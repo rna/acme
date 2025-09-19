@@ -3,8 +3,9 @@
 class Basket
   attr_reader :items
 
-  def initialize(product_catalogue)
+  def initialize(product_catalogue:, pricing_rules: [])
     @product_catalogue = product_catalogue
+    @pricing_rules = pricing_rules
     @items = []
   end
 
@@ -15,13 +16,10 @@ class Basket
   def total
     subtotal = @items.sum { |product_code| @product_catalogue[product_code][:price] }
 
-    delivery_cost = 0
-    if subtotal < 50
-      delivery_cost = 4.95
-    elsif subtotal < 90
-      delivery_cost = 2.95
+    adjustments = @pricing_rules.sum do |rule|
+      rule.apply(subtotal, @items)
     end
 
-    (subtotal + delivery_cost).round(2)
+    (subtotal + adjustments).round(2)
   end
 end
