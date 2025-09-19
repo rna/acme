@@ -19,4 +19,26 @@ class BasketTest < Minitest::Test
 
     assert_equal %w[B01 G01], @basket.items
   end
+
+  def test_total_for_basket_under_50_dollars
+    @basket.add('B01')
+    @basket.add('G01')
+    # Subtotal: 32.90, Delivery: 4.95
+    assert_equal 37.85, @basket.total
+  end
+
+  def test_total_for_basket_under_90_dollars
+    @basket.add('R01')
+    @basket.add('G01')
+    # Subtotal: 57.90, Delivery: 2.95
+    assert_equal 60.85, @basket.total
+  end
+
+  def test_total_for_basket_90_or_over
+    @basket.add('R01')
+    @basket.add('R01')
+    @basket.add('R01')
+    # Subtotal: 98.85, Delivery: 0
+    assert_equal 98.85, @basket.total
+  end
 end
